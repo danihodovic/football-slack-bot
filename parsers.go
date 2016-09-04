@@ -78,22 +78,10 @@ func (m *match) toString() string {
 		m.TimeCurrent, m.HomeTeam, m.HomeTeamGoals, m.AwayTeamGoals, m.AwayTeam)
 }
 
+// Time to store the struct in Redis. Most matches end within 120 minutes so we don't have to be
+// specific here
 func (m *match) ttl() time.Duration {
 	return time.Duration(120 * time.Minute)
-	// var currentMinute int
-	// if m.TimeCurrent == "HT" {
-	// currentMinute = 45
-	// } else {
-	// var err error
-	// currentMinute, err = strconv.Atoi(m.TimeCurrent)
-	// if err != nil {
-	// log.Println("Error parsing time remaining for: ", m, "Setting to 120")
-	// return time.Duration(120)
-	// }
-	// }
-
-	// maxTimeRemaining := 120 - currentMinute
-	// return time.Duration(maxTimeRemaining) * time.Second
 }
 
 func parseESPN() []match {
