@@ -1,0 +1,12 @@
+version: '2'
+
+services:
+  redis:
+    image: redis
+
+  app:
+    build: .
+    depends_on:
+      - redis
+    volumes:
+      - .:/app

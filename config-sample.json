@@ -1,0 +1,19 @@
+{
+  "slack": {
+    "url": "https://hooks.slack.com/services/foo/bar/baz",
+		"channel":   "#test",
+		"username":  "test",
+		"iconEmoji": "test"
+  },
+  "teams": [
+    "team to notify on 1",
+    "team to notify on 2"
+  ],
+  "events": [
+    "yellow card",
+    "red card",
+    "goal",
+    "substitution"
+  ],
+  "interval": 30
+}
