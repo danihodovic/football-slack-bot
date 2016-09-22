@@ -84,8 +84,9 @@ func (m *match) ttl() time.Duration {
 	return time.Duration(120 * time.Minute)
 }
 
-func parseESPN() []match {
-	url := "http://www.espnfc.com/scores"
+// Pass in the baseURL so that we can isolate and test this function
+func parseESPN(baseURL string) []match {
+	url := baseURL + "/scores"
 	doc, err := goquery.NewDocument(url)
 	logErr(err)
 
@@ -99,7 +100,7 @@ func parseESPN() []match {
 		matchIDRegex := regexp.MustCompile(`gameId=(\d+)`)
 		matchID := matchIDRegex.FindStringSubmatch(href)[1]
 
-		matchURL := "http://www.espnfc.com/match?gameId=%s"
+		matchURL := baseURL + "/match?gameId=%s"
 		matchURL = fmt.Sprintf(matchURL, matchID)
 
 		matchDoc, err := goquery.NewDocument(matchURL)

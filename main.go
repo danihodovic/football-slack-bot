@@ -14,7 +14,7 @@ func logErr(err error) {
 }
 
 func run(client *redis.Client, cfg config) {
-	matches := parseESPN()
+	matches := parseESPN("http://www.espnfc.com")
 
 	for _, m := range matches {
 		if !relevantEvent(cfg, m) {

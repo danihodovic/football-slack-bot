@@ -2,6 +2,8 @@ package main
 
 import (
 	"github.com/PuerkitoBio/goquery"
+	"log"
+	"net/http"
 	"os"
 	"reflect"
 	"testing"
@@ -41,5 +43,50 @@ func TestParseESPNMatchDetails(t *testing.T) {
 
 	if !reflect.DeepEqual(expectedEvents, events) {
 		t.Log("expected events and events not equal")
+	}
+}
+
+func TestParseESPN(t *testing.T) {
+	http.HandleFunc("/scores", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "./test-samples/espn_example_1_scores.html")
+	})
+
+	http.HandleFunc("/match", func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Query()["gameId"][0] == "466482" {
+			http.ServeFile(w, r, "./test-samples/espn_example_1_live_466482.html")
+		}
+	})
+
+	go func() {
+		err := http.ListenAndServe(":8080", nil)
+		if err != nil {
+			log.Fatalln(err)
+		}
+	}()
+
+	matches := parseESPN("http://localhost:8080")
+	var match466482 match
+
+	for _, match := range matches {
+		if match.MatchID == "466482" {
+			match466482 = match
+		}
+	}
+
+	expectedMatch := match{
+		TimeCurrent:   "54",
+		HomeTeam:      "Twente Enschede",
+		AwayTeam:      "FC Utrecht",
+		HomeTeamGoals: 1,
+		AwayTeamGoals: 1,
+		MatchID:       "466482",
+		MatchEvents: []matchEvent{
+			matchEvent{Minute: "17", EventType: "goal", Team: "FC Utrecht", Text: "Richairo Zivkovic Goal"},
+			matchEvent{Minute: "54", EventType: "goal", Team: "Twente Enschede", Text: "Enes Unal Goal"},
+		},
+	}
+
+	if !reflect.DeepEqual(match466482, expectedMatch) {
+		t.Fail()
 	}
 }
