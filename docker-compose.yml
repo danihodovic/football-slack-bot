@@ -12,3 +12,5 @@ services:
       - .:/app
     logging:
       driver: syslog
+      options:
+        tag: '{{.Name}}'
