@@ -17,7 +17,7 @@ func run(client *redis.Client, cfg config) {
 	matches := parseESPN("http://www.espnfc.com")
 
 	for _, m := range matches {
-		if !relevantEvent(cfg, m) {
+		if !relevantTeam(cfg, m.HomeTeam) || !relevantTeam(cfg, m.AwayTeam) {
 			continue
 		}
 
@@ -33,8 +33,9 @@ func run(client *redis.Client, cfg config) {
 		}
 
 		// We have new events
-		if len(m.MatchEvents) > len(oldM.MatchEvents) {
+		if relevantEvent(cfg, m) && len(m.MatchEvents) > len(oldM.MatchEvents) {
 			log.Println("New event!", m.lastEvent().Text, m.toString())
+			log.Println(m.MatchEvents, oldM.MatchEvents)
 			sendSlackMessage(cfg, m)
 			setMatch(client, m)
 		}
@@ -57,5 +58,4 @@ func main() {
 		run(client, cfg)
 		time.Sleep(cfg.interval)
 	}
-
 }
