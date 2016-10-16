@@ -10,3 +10,5 @@ services:
       - redis
     volumes:
       - .:/app
+    logging:
+      driver: syslog

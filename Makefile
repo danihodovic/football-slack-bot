@@ -3,7 +3,7 @@ GO_FILES = $(shell find ! -name '*_test.go' -name '*.go')
 # Starts the container
 .PHONY: start
 start:
-	docker-compose run go run $(GO_FILES) --config config.json
+	docker-compose run app go run $(GO_FILES) --config config.json
 
 .PHONY: test
 test:
